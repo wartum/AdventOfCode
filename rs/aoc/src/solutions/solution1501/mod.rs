@@ -20,9 +20,9 @@ pub fn solve(input: String) -> Solution {
     }
 
     Solution {
-        one_star: Ok(format!("{}", current_floor).into()),
+        one_star: Ok(format!("{}", current_floor)),
         two_star: match basement_position {
-            Some(pos) => Ok(format!("{}", pos).into()),
+            Some(pos) => Ok(format!("{}", pos)),
             None => Err("Never enters basement".into()),
         }
     }
