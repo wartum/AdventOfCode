@@ -34,7 +34,7 @@ impl Box {
     }
 
     fn ribbon_length(&self) -> u32 {
-        let mut dims = vec![self.length, self.width, self.height];
+        let mut dims = [self.length, self.width, self.height];
         dims.sort();
 
         (2 * dims[0] + 2 * dims[1]) + (self.length * self.width * self.height)
