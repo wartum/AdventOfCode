@@ -17,9 +17,11 @@ pub fn parse() -> Result<Params> {
         match params[index].as_str() {
             "-y" | "--year" => {
                 year = params.get(index + 1).and_then(|y| y.parse().ok());
+                index += 1;
             }
             "-d" | "--day" => {
                 day = params.get(index + 1).and_then(|d| d.parse().ok());
+                index += 1;
             }
             _ => {}
         }

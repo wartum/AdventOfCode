@@ -10,7 +10,7 @@ pub async fn get_input(year: u32, day: u8) -> Result<String> {
         .send()
         .await?
         .error_for_status()
-        .map_err(|_| "Could not find input for given puzzle")?
+        .map_err(|_| format!("Could not find input for given puzzle: {}/{}", year, day))?
         .text()
         .await?;
     Ok(rsp)
