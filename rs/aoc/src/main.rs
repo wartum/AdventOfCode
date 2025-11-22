@@ -10,7 +10,7 @@ type Result<T> = std::result::Result<T, Error>;
 #[tokio::main]
 async fn main() -> Result<()>{
     let params = params::parse()?;
-    let input = get_input(params.year, params.day, params.cache_input).await?;
+    let input = get_input(params.year, params.day, params.use_cached_input).await?;
     let solution = solutions::solve(params.year, params.day, input);
 
     match solution.one_star {

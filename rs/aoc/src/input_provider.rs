@@ -26,18 +26,16 @@ fn save_local(year: u32, day: u8, input: &str) {
     let _ = std::fs::write(path, input);
 }
 
-pub async fn get_input(year: u32, day: u8, cache_input: bool) -> Result<String> {
-    if let Some(input) = get_local(year, day) {
-        return Ok(input);
-    }
-
-    match get_online(year, day).await {
-        Ok(input) => {
-            if cache_input {
+pub async fn get_input(year: u32, day: u8, use_cached_input: bool) -> Result<String> {
+    if use_cached_input && let Some(input) = get_local(year, day) {
+        Ok(input)
+    } else {
+        match get_online(year, day).await {
+            Ok(input) => {
                 save_local(year, day, &input);
+                Ok(input)
             }
-            Ok(input)
+            Err(e) => Err(e),
         }
-        Err(e) => Err(e),
     }
 }

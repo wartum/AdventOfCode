@@ -5,13 +5,13 @@ use crate::Result;
 pub struct Params {
     pub year: u32,
     pub day: u8,
-    pub cache_input: bool,
+    pub use_cached_input: bool,
 }
 
 pub fn parse() -> Result<Params> {
     let mut year = None;
     let mut day = None;
-    let mut cache_input = false;
+    let mut use_cached_input = true;
 
     let mut index = 0;
     let params: Vec<String> = args().collect();
@@ -25,8 +25,8 @@ pub fn parse() -> Result<Params> {
                 day = params.get(index + 1).and_then(|d| d.parse().ok());
                 index += 1;
             }
-            "--cache-input" => {
-                cache_input = true;
+            "--no-cache" => {
+                use_cached_input = false;
             }
             _ => {}
         }
@@ -36,6 +36,6 @@ pub fn parse() -> Result<Params> {
     Ok(Params {
         year: year.ok_or("Year not provided or invalid")?,
         day: day.ok_or("Day not provided or invalid")?,
-        cache_input,
+        use_cached_input,
     })
 }
