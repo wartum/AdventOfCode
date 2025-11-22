@@ -1,5 +1,5 @@
 use crate::Result;
-use super::{solution1501, solution1502};
+use super::{solution1501, solution1502, solution1503};
 
 pub struct Solution {
     pub one_star: Result<String>,
@@ -19,6 +19,7 @@ pub fn solve(year: u32, day: u8, input: String) -> Solution {
     match (year, day) {
         (2015, 1) => solution1501::solve(input),
         (2015, 2) => solution1502::solve(input),
+        (2015, 3) => solution1503::solve(input),
         _ => Solution::default()
     }
 }
