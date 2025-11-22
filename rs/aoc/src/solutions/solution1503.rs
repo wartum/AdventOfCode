@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 use super::Solution;
 
-pub fn solve(input: String) -> super::Solution {
+pub fn solve(input: String) -> Solution {
     Solution {
         one_star: Ok(solve_santa_only(&input)),
         two_star: Ok(solve_robo_santa(&input)),
