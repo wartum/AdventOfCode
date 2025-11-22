@@ -67,11 +67,7 @@ mod tests {
 
     #[test]
     fn santa_delivery() {
-        let test_cases = vec![
-            (">", 2),
-            ("^>v<", 4),
-            ("^v^v^v^v^v", 2),
-        ];
+        let test_cases = vec![(">", 2), ("^>v<", 4), ("^v^v^v^v^v", 2)];
 
         for (input, expected) in test_cases {
             let solution = solve_santa_only(input);
@@ -81,11 +77,7 @@ mod tests {
 
     #[test]
     fn robo_santa_delivery() {
-        let test_cases = vec![
-            ("^v", 3),
-            ("^>v<", 3),
-            ("^v^v^v^v^v", 11),
-        ];
+        let test_cases = vec![("^v", 3), ("^>v<", 3), ("^v^v^v^v^v", 11)];
 
         for (input, expected) in test_cases {
             let solution = solve_robo_santa(input);
