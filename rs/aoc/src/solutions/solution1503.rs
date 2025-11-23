@@ -9,7 +9,7 @@ pub fn solve(input: String) -> Solution {
     }
 }
 
-pub fn solve_santa_only(input: &str) -> String {
+fn solve_santa_only(input: &str) -> String {
     let mut santa_x = 0;
     let mut santa_y = 0;
 
@@ -30,7 +30,7 @@ pub fn solve_santa_only(input: &str) -> String {
     houses.len().to_string()
 }
 
-pub fn solve_robo_santa(input: &str) -> String {
+fn solve_robo_santa(input: &str) -> String {
     let mut santa_x = 0;
     let mut santa_y = 0;
     let mut robosanta_x = 0;

@@ -17,11 +17,11 @@ pub fn parse() -> Result<Params> {
     let params: Vec<String> = args().collect();
     while index < params.len() {
         match params[index].as_str() {
-            "-y" | "--year" => {
+            "--year" | "-y" => {
                 year = params.get(index + 1).and_then(|y| y.parse().ok());
                 index += 1;
             }
-            "-d" | "--day" => {
+            "--day" | "-d" => {
                 day = params.get(index + 1).and_then(|d| d.parse().ok());
                 index += 1;
             }

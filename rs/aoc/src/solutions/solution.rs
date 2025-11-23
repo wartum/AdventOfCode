@@ -1,4 +1,4 @@
-use super::{solution1501, solution1502, solution1503, solution1504};
+use super::{solution1501, solution1502, solution1503, solution1504, solution1505};
 use crate::Result;
 
 pub struct Solution {
@@ -21,6 +21,7 @@ pub fn solve(year: u32, day: u8, input: String) -> Solution {
         (2015, 2) => solution1502::solve(input),
         (2015, 3) => solution1503::solve(input),
         (2015, 4) => solution1504::solve(input),
+        (2015, 5) => solution1505::solve(input),
         _ => Solution::default(),
     }
 }

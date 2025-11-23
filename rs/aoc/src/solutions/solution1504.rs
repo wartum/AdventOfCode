@@ -18,7 +18,7 @@ pub fn solve(input: String) -> Solution {
     Solution { one_star, two_star }
 }
 
-pub fn try_number(key: &str, number: u64, condition: &str) -> bool {
+fn try_number(key: &str, number: u64, condition: &str) -> bool {
     let hash_input = format!("{}{}", key, number);
     let hash_output = format!("{:x}", md5::compute(&hash_input));
     hash_output.starts_with(condition)
