@@ -64,15 +64,10 @@ fn contains_repeating_pair(line: &str) -> bool {
     let mut do_insert = true;
     let mut pairs_count = HashMap::new();
     for pair in pairs.iter() {
-        if let Some(pr_pair) = pr_pair
-            && pr_pair == *pair
-        {
-            do_insert = false;
-
-            if let Some(prpr_pair) = prpr_pair
-                && prpr_pair == *pair
-            {
-                do_insert = true;
+        if let Some(pr_pair) = pr_pair {
+            do_insert = pr_pair != *pair;
+            if !do_insert && let Some(prpr_pair) = prpr_pair {
+                do_insert = prpr_pair == *pair;
             }
         }
 
@@ -83,7 +78,6 @@ fn contains_repeating_pair(line: &str) -> bool {
             };
         }
 
-        do_insert = true;
         if let Some(pr_pair) = pr_pair {
             prpr_pair = Some(pr_pair);
         }
