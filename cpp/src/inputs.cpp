@@ -87,16 +87,11 @@ optional<string> get_online(int year, int day)
     curl_easy_setopt(curl, CURLOPT_HEADERFUNCTION, input_received_headers);
     curl_easy_setopt(curl, CURLOPT_HEADERDATA, &status_code);
     curl_easy_perform(curl);
-
     curl_easy_cleanup(curl);
-    if (status_code == 200)
-    {
-        return input_buffer.str();
-    }
-    else
-    {
-        return {};
-    }
+
+    return status_code == 200
+        ? input_buffer.str()
+        : optional<string>();
 }
 
 size_t input_received(void *buffer, size_t size, size_t nmemb, void *userp)
@@ -110,7 +105,7 @@ size_t input_received(void *buffer, size_t size, size_t nmemb, void *userp)
 size_t input_received_headers(char *buffer, size_t size, size_t nitems, void *status_code)
 {
     string header((char*)buffer, nitems);
-    if (header.find("HTTP/2") != string::npos)
+    if (header.find("HTTP/") == 0)
     {
         *reinterpret_cast<int*>(status_code) = stoi(header.substr(7));
     }
