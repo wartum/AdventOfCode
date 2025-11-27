@@ -1,9 +1,9 @@
 #include "solutions.hpp"
 
 using namespace std;
-using solutions::Solution;
+using namespace solutions;
 
-std::ostream& solutions::operator<<(std::ostream& os, Solution &solution)
+ostream& solutions::operator<<(ostream& os, Solution &solution)
 {
     os << "* : "
        << (solution.one_star.has_value() ? solution.one_star.value() : "No solution found")

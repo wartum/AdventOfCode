@@ -5,7 +5,6 @@
 #include "solutions/solutions.hpp"
 
 using namespace std;
-using solutions::Solution;
 using solutions::solve;
 
 struct Program
