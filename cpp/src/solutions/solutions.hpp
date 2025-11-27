@@ -5,6 +5,17 @@
 
 namespace solutions
 {
+    class InvalidInputException : public std::exception
+    {
+        public:
+            InvalidInputException(const char* message) :
+                message(message) {}
+            const char* what() const noexcept override
+            { return message; }
+        private:
+            const char* message;
+    };
+
     struct Solution
     {
         std::optional<std::string> one_star;
@@ -14,8 +25,10 @@ namespace solutions
     std::ostream& operator<<(std::ostream& os, Solution &solution);
     Solution solve(int year, int day, const std::string &input);
 
-    namespace solution1501
-    {
+    namespace solution1501 {
+        Solution solve(const std::string &input);
+    }
+    namespace solution1502 {
         Solution solve(const std::string &input);
     }
 }

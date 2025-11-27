@@ -1,5 +1,6 @@
 Cargo.lock
 target/
 build/
+Testing/
 .cache/
 input*.txt

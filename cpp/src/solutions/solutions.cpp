@@ -21,6 +21,7 @@ Solution solutions::solve(int year, int day, const string &input)
             switch (day)
             {
                 case 1: return solution1501::solve(input);
+                case 2: return solution1502::solve(input);
             }
     }
 
