@@ -1,6 +1,5 @@
 #!/bin/sh
 parse_params() {
-    [ "$#" -eq 0 ] && print_help && exit 0
     while (( "$#" )); do
         case "$1" in
             -h) HELP="true"; return ;;
