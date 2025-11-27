@@ -2,8 +2,11 @@
 #include <curl/curl.h>
 #include "inputs.hpp"
 #include "params.hpp"
+#include "solutions/solutions.hpp"
 
 using namespace std;
+using solutions::Solution;
+using solutions::solve;
 
 struct Program
 {
@@ -42,6 +45,7 @@ int Program::main(int argc, char **argv)
     if (!input.has_value())
         return 1;
 
-    cout << input.value();
+    auto solution = solve(parameters.year, parameters.day, input.value());
+    cout << solution << "\n";
     return 0;
 }

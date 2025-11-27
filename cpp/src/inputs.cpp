@@ -55,7 +55,7 @@ optional<string> get_local(int year, int day)
 
 void save_local(int year, int day, string &content)
 {
-    stringstream file_name, file_buffer;
+    stringstream file_name;
     file_name << "input" << year << day << ".txt";
     ofstream file(file_name.str());
     if (file.is_open())
