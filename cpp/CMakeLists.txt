@@ -23,8 +23,8 @@ add_library(solutions OBJECT
 add_executable(unit-tests
     src/solutions/solution1502tests.cpp
 )
-target_link_libraries(unit-tests solutions GTest::gtest_main)
+target_link_libraries(unit-tests PRIVATE solutions GTest::gtest_main)
 add_test(unit-tests unit-tests)
 
 add_executable(aoc src/aoc.cpp)
-target_link_libraries(aoc utils solutions CURL::libcurl)
+target_link_libraries(aoc PRIVATE utils solutions CURL::libcurl)
