@@ -1,5 +1,7 @@
 #include "solutions.hpp"
 #include "solution1502.hpp"
+#include <array>
+#include <algorithm>
 #include <iostream>
 #include <sstream>
 
@@ -58,16 +60,24 @@ int Box::wrapping_paper_area()
     return 2 * (lw+wh+hl) + current_min;
 }
 
+int Box::ribbon_length()
+{
+    array<int, 3> dimensions {length, width, height};
+    sort(dimensions.begin(), dimensions.end());
+    return 2 * (dimensions[0] + dimensions[1]) + (length * width * height);
+}
+
 Solution solutions::solution1502::solve(stringstream &input)
 {
     string line;
-    int wrapping_paper_sum = 0;
+    int wrapping_paper_sum = 0, ribbon_sum = 0;
     try
     {
         while(getline(input, line))
         {
             Box box(line);
             wrapping_paper_sum += box.wrapping_paper_area();
+            ribbon_sum += box.ribbon_length();
         }
     }
     catch (InvalidInputException &ex)
@@ -79,6 +89,6 @@ Solution solutions::solution1502::solve(stringstream &input)
 
     return {
         one_star: to_string(wrapping_paper_sum),
-        two_star: optional<string>()
+        two_star: to_string(ribbon_sum)
     };
 }

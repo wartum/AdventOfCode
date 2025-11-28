@@ -13,6 +13,7 @@ namespace solutions::solution1502
         Box(const std::string &description);
 
         int wrapping_paper_area();
+        int ribbon_length();
     };
 
     std::ostream& operator<<(std::ostream &os, Box &box);

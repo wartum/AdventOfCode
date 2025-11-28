@@ -32,3 +32,11 @@ TEST(solution1502, wrapping_paper_area)
     EXPECT_EQ(box1.wrapping_paper_area(), 58);
     EXPECT_EQ(box2.wrapping_paper_area(), 43);
 }
+
+TEST(solution1502, ribbon_length)
+{
+    Box box1(2,3,4);
+    Box box2(1,1,10);
+    EXPECT_EQ(box1.ribbon_length(), 34);
+    EXPECT_EQ(box2.ribbon_length(), 14);
+}
