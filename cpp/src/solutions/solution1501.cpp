@@ -1,13 +1,16 @@
 #include "solutions.hpp"
+#include <sstream>
 
 using namespace std;
 using namespace solutions;
 
-Solution solutions::solution1501::solve(const string &input)
+Solution solutions::solution1501::solve(stringstream &input)
 {
+    string line;
+    std::getline(input, line);
     int current_floor = 0, i = 1;
     optional<int> first_basement_position = {};
-    for (char c : input)
+    for (char c : line)
     {
         if (c == '(')
             current_floor += 1;

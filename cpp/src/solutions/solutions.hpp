@@ -11,7 +11,7 @@ namespace solutions
             InvalidInputException(const char* message) :
                 message(message) {}
             const char* what() const noexcept override
-            { return message; }
+                { return message; }
         private:
             const char* message;
     };
@@ -23,12 +23,12 @@ namespace solutions
     };
 
     std::ostream& operator<<(std::ostream& os, Solution &solution);
-    Solution solve(int year, int day, const std::string &input);
+    Solution solve(int year, int day, std::stringstream &input);
 
     namespace solution1501 {
-        Solution solve(const std::string &input);
+        Solution solve(std::stringstream &input);
     }
     namespace solution1502 {
-        Solution solve(const std::string &input);
+        Solution solve(std::stringstream &input);
     }
 }

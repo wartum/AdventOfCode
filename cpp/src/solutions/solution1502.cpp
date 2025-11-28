@@ -58,14 +58,13 @@ int Box::wrapping_paper_area()
     return 2 * (lw+wh+hl) + current_min;
 }
 
-Solution solutions::solution1502::solve(const string &input)
+Solution solutions::solution1502::solve(stringstream &input)
 {
-    stringstream lines(input);
     string line;
     int wrapping_paper_sum = 0;
     try
     {
-        while(getline(lines, line))
+        while(getline(input, line))
         {
             Box box(line);
             wrapping_paper_sum += box.wrapping_paper_area();

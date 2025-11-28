@@ -7,35 +7,35 @@
 
 using namespace std;
 
-void save_local(int year, int day, string &content);
-optional<string> get_local(int year, int day);
-optional<string> get_online(int year, int day);
+void save_local(int year, int day, const string &content);
+optional<stringstream> get_local(int year, int day);
+optional<stringstream> get_online(int year, int day);
 size_t input_received(void *buffer, size_t size, size_t nmemb, void *userp);
 size_t input_received_headers(char *buffer, size_t size, size_t nitems, void *userdata);
 
-optional<string> inputs::get_input(int year, int day, bool use_cache)
+optional<stringstream> inputs::get_input(int year, int day, bool use_cache)
 {
     if (use_cache)
     {
-        optional<string> local_input = get_local(year, day);
+        optional<stringstream> local_input = get_local(year, day);
         if (local_input.has_value())
         {
-            return local_input.value();
+            return local_input;
         }
     }
 
-    optional<string> online_input = get_online(year, day);
+    optional<stringstream> online_input = get_online(year, day);
     if (online_input.has_value())
     {
-        save_local(year, day, online_input.value());
-        return online_input.value();
+        save_local(year, day, online_input.value().str());
+        return online_input;
     }
 
     cerr << "No input found\n";
     return {};
 }
 
-optional<string> get_local(int year, int day)
+optional<stringstream> get_local(int year, int day)
 {
     stringstream file_name, file_buffer;
     file_name << "input" << year << day << ".txt";
@@ -45,7 +45,7 @@ optional<string> get_local(int year, int day)
     {
         file_buffer << input.rdbuf();
         input.close();
-        return file_buffer.str();
+        return file_buffer;
     }
     else
     {
@@ -53,7 +53,7 @@ optional<string> get_local(int year, int day)
     }
 }
 
-void save_local(int year, int day, string &content)
+void save_local(int year, int day, const string &content)
 {
     stringstream file_name;
     file_name << "input" << year << day << ".txt";
@@ -65,7 +65,7 @@ void save_local(int year, int day, string &content)
     }
 }
 
-optional<string> get_online(int year, int day)
+optional<stringstream> get_online(int year, int day)
 {
     char* session_value = std::getenv("AOC_SESSION");
     if (session_value == NULL || strlen(session_value) == 0 )
@@ -89,9 +89,10 @@ optional<string> get_online(int year, int day)
     curl_easy_perform(curl);
     curl_easy_cleanup(curl);
 
-    return status_code == 200
-        ? input_buffer.str()
-        : optional<string>();
+    if (status_code == 200)
+        return input_buffer;
+    else
+        return {};
 }
 
 size_t input_received(void *buffer, size_t size, size_t nmemb, void *userp)

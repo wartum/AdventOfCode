@@ -13,7 +13,7 @@ ostream& solutions::operator<<(ostream& os, Solution &solution)
     return os;
 }
 
-Solution solutions::solve(int year, int day, const string &input)
+Solution solutions::solve(int year, int day, stringstream &input)
 {
     switch (year)
     {
