@@ -5,8 +5,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS)
 
-enable_testing()
-
 find_package(CURL REQUIRED)
 find_package(GTest REQUIRED)
 
@@ -14,14 +12,18 @@ add_library(utils OBJECT
     src/inputs.cpp
     src/params.cpp
 )
+
 add_library(solutions OBJECT
     src/solutions/solutions.cpp
     src/solutions/solution1501.cpp
     src/solutions/solution1502.cpp
+    src/solutions/solution1503.cpp
 )
 
+enable_testing()
 add_executable(unit-tests
     src/solutions/solution1502tests.cpp
+    src/solutions/solution1503tests.cpp
 )
 target_link_libraries(unit-tests PRIVATE solutions GTest::gtest_main)
 add_test(unit-tests unit-tests)

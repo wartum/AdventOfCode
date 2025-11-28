@@ -22,6 +22,7 @@ Solution solutions::solve(int year, int day, stringstream &input)
             {
                 case 1: return solution1501::solve(input);
                 case 2: return solution1502::solve(input);
+                case 3: return solution1503::solve(input);
             }
     }
 
