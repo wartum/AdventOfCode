@@ -54,26 +54,17 @@ namespace solutions::solution1505
     bool contains_blacklisted_strings(const string &str)
     {
         array<string, 4> blacklist {"ab", "cd", "xy", "pq"};
-        for (string &str2 : blacklist)
-        {
-            if (str.find(str2) != string::npos)
+        for (string &blacklisted : blacklist)
+            if (str.find(blacklisted) != string::npos)
                 return true;
-        }
         return false;
     }
 
     bool letter_twice(const std::string &str)
     {
-        optional<char> prev_c = {};
-        for (char c : str)
-        {
-            if (prev_c.has_value())
-            {
-                if (c == prev_c.value())
-                    return true;
-            }
-            prev_c = c;
-        }
+        for (auto it = str.begin(); it != str.end() - 1; it++)
+            if (*it == *(it+1))
+                return true;
         return false;
     }
 
@@ -105,21 +96,13 @@ namespace solutions::solution1505
             {
                 return p.second >= 2;
             });
-
-        for (auto &pair : pairs_cnt)
-        {
-            cout << pair.first << " = " << pair.second << '\n';
-        }
-        return false;
     }
 
     bool contains_letter_between_pair(const string &str)
     {
         for (int i = 0; i < str.size()-2 ; i++)
-        {
             if (str[i] == str[i+2])
                 return true;
-        }
         return false;
     }
 }
