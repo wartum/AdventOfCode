@@ -88,7 +88,7 @@ Solution solutions::solution1502::solve(stringstream &input)
 
 
     return {
-        one_star: to_string(wrapping_paper_sum),
-        two_star: to_string(ribbon_sum)
+        to_string(wrapping_paper_sum),
+        to_string(ribbon_sum)
     };
 }

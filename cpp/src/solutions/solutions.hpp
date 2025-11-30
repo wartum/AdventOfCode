@@ -25,13 +25,8 @@ namespace solutions
     std::ostream& operator<<(std::ostream& os, Solution &solution);
     Solution solve(int year, int day, std::stringstream &input);
 
-    namespace solution1501 {
-        Solution solve(std::stringstream &input);
-    }
-    namespace solution1502 {
-        Solution solve(std::stringstream &input);
-    }
-    namespace solution1503 {
-        Solution solve(std::stringstream &input);
-    }
+    namespace solution1501 { Solution solve(std::stringstream &input); }
+    namespace solution1502 { Solution solve(std::stringstream &input); }
+    namespace solution1503 { Solution solve(std::stringstream &input); }
+    namespace solution1504 { Solution solve(std::stringstream &input); }
 }

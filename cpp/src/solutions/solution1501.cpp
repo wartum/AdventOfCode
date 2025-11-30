@@ -22,7 +22,7 @@ Solution solutions::solution1501::solve(stringstream &input)
     }
 
     return {
-        one_star: to_string(current_floor),
-        two_star: first_basement_position.has_value() ? to_string(first_basement_position.value()) : optional<string>()
+        to_string(current_floor),
+        first_basement_position.has_value() ? to_string(first_basement_position.value()) : optional<string>()
     };
 }
