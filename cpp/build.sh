@@ -29,5 +29,5 @@ BUILD_TREE=build
 
 [ "$CLEAN" == "true" ] && rm -rf "$BUILD_TREE"
 cmake --preset "$PRESET" || exit 1
-cmake --build "$BUILD_TREE" || exit 1
+cmake --build "$BUILD_TREE" -- -j $(nproc) || exit 1
 [ "$TEST" == "true" ] && ctest --test-dir "$BUILD_TREE" --output-on-failure
