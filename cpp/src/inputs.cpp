@@ -11,7 +11,7 @@ void save_local(int year, int day, const string &content);
 optional<stringstream> get_local(int year, int day);
 optional<stringstream> get_online(int year, int day);
 size_t input_received(void *buffer, size_t size, size_t nmemb, void *userp);
-size_t input_received_headers(char *buffer, size_t size, size_t nitems, void *userdata);
+size_t input_received_headers(char *buffer, size_t size, size_t nitems, void *status_code);
 
 optional<stringstream> inputs::get_input(int year, int day, bool use_cache)
 {

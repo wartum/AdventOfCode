@@ -11,13 +11,14 @@ struct Program
 {
     Program();
     ~Program();
-    int main(int argc, char **argv);
+
+    static int main(int argc, char **argv);
 };
 
 int main(int argc, char **argv)
 {
     Program program;
-    program.main(argc, argv);
+    Program::main(argc, argv);
 }
 
 // Initialization

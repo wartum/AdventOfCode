@@ -1,6 +1,6 @@
 #include <iostream>
 #include <sstream>
-#include <set>
+#include <unordered_set>
 
 #include "solutions.hpp"
 #include "solution1503.hpp"
@@ -25,7 +25,7 @@ Solution solutions::solution1503::solve(stringstream &input)
 
 int solutions::solution1503::travel(const string &input, bool with_robo_santa)
 {
-    set<Position> visited;
+    unordered_set<Position> visited;
     Position santa_pos {0,0};
     Position robot_pos {0,0};
     Position *pos = &santa_pos;
@@ -59,4 +59,9 @@ bool solutions::solution1503::operator<(const Position &pos1, const Position &po
     return pos1.x == pos2.x
         ? pos1.y < pos2.y
         : pos1.x < pos2.x;
+}
+
+bool solutions::solution1503::operator==(const Position &pos1, const Position &pos2)
+{
+    return pos1.x == pos2.x && pos1.y == pos2.y;
 }
