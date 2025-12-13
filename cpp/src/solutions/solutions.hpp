@@ -3,6 +3,8 @@
 #include <string>
 #include <optional>
 
+#define DECLARE_SOLUTION(x) namespace solution##x { Solution solve(std::stringstream &input); }
+
 namespace solutions
 {
     class InvalidInputException : public std::exception
@@ -25,10 +27,12 @@ namespace solutions
     std::ostream& operator<<(std::ostream& os, Solution &solution);
     Solution solve(int year, int day, std::stringstream &input);
 
-    namespace solution1501 { Solution solve(std::stringstream &input); }
-    namespace solution1502 { Solution solve(std::stringstream &input); }
-    namespace solution1503 { Solution solve(std::stringstream &input); }
-    namespace solution1504 { Solution solve(std::stringstream &input); }
-    namespace solution1505 { Solution solve(std::stringstream &input); }
-    namespace solution1506 { Solution solve(std::stringstream &input); }
+    DECLARE_SOLUTION(1501)
+    DECLARE_SOLUTION(1502)
+    DECLARE_SOLUTION(1503)
+    DECLARE_SOLUTION(1504)
+    DECLARE_SOLUTION(1505)
+    DECLARE_SOLUTION(1506)
 }
+
+#undef DECLARE_SOLUTION
