@@ -30,4 +30,5 @@ namespace solutions
     namespace solution1503 { Solution solve(std::stringstream &input); }
     namespace solution1504 { Solution solve(std::stringstream &input); }
     namespace solution1505 { Solution solve(std::stringstream &input); }
+    namespace solution1506 { Solution solve(std::stringstream &input); }
 }
