@@ -21,9 +21,10 @@ namespace solutions::solution1506
         Grid();
         void execute(Instruction instruction);
         void execute_2(Instruction instruction);
-        std::array<int, GRID_WIDTH * GRID_HEIGHT> lights;
         int& get_light(int x, int y);
         size_t count_turned_on();
+
+        std::array<int, GRID_WIDTH * GRID_HEIGHT> lights;
     };
 
     Position read_position(const std::string &line);
