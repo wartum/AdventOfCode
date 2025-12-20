@@ -48,12 +48,12 @@
     },
     {
       "name": "MSVC-Debug",
-      "configurePreset": "msvc",
+      "configurePreset": "MSVC",
       "configuration": "Debug"
     },
     {
       "name": "MSVC-Release",
-      "configurePreset": "msvc",
+      "configurePreset": "MSVC",
       "configuration": "Release"
     }
   ]
