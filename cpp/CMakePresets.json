@@ -25,6 +25,16 @@
         "CMAKE_BUILD_TYPE": "Release",
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
       }
+    },
+    {
+      "name": "MSVC",
+      "displayName": "Windows Build",
+      "generator": "Visual Studio 17 2022",
+      "binaryDir": "build",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+      }
     }
   ],
   "buildPresets": [
@@ -35,6 +45,16 @@
     {
       "name": "Release",
       "configurePreset": "Release"
+    },
+    {
+      "name": "MSVC-Debug",
+      "configurePreset": "msvc",
+      "configuration": "Debug"
+    },
+    {
+      "name": "MSVC-Release",
+      "configurePreset": "msvc",
+      "configuration": "Release"
     }
   ]
 }

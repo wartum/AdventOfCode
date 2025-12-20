@@ -1,0 +1,7 @@
+{
+  "dependencies": [
+    "curl",
+    "gtest",
+    "openssl"
+  ]
+}

@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "params.hpp"
 
 using namespace std;
