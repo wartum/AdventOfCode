@@ -22,6 +22,7 @@ add_library(solutions OBJECT
     src/solutions/solution1504.cpp
     src/solutions/solution1505.cpp
     src/solutions/solution1506.cpp
+    src/solutions/solution1507.cpp
 )
 
 add_executable(unit-tests
@@ -30,6 +31,7 @@ add_executable(unit-tests
     src/solutions/tests/solution1504.cpp
     src/solutions/tests/solution1505.cpp
     src/solutions/tests/solution1506.cpp
+    src/solutions/tests/solution1507.cpp
 )
 target_include_directories(unit-tests PRIVATE src/solutions)
 target_link_libraries(unit-tests PRIVATE solutions OpenSSL::Crypto GTest::gtest_main)
