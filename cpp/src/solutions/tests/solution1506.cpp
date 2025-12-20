@@ -32,7 +32,7 @@ TEST(solution1506, execute_instruction)
     Grid grid;
     for (auto &val : test_values)
     {
-        grid.lights.fill(0);
+        grid.lights->fill(0);
         grid.execute(read_instruction(get<0>(val)));
         ASSERT_EQ(grid.count_turned_on(), get<1>(val));
     }

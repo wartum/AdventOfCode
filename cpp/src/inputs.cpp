@@ -90,9 +90,14 @@ optional<stringstream> get_online(int year, int day)
     curl_easy_cleanup(curl);
 
     if (status_code == 200)
+    {
         return input_buffer;
+    }
     else
+    {
+        cerr << "Failed to get input, HTTP status code: " << status_code << "\n";
         return {};
+    }
 }
 
 size_t input_received(void *buffer, size_t size, size_t nmemb, void *userp)
@@ -108,7 +113,9 @@ size_t input_received_headers(char *buffer, size_t size, size_t nitems, void *st
     string header((char*)buffer, nitems);
     if (header.find("HTTP/") == 0)
     {
-        *reinterpret_cast<int*>(status_code) = stoi(header.substr(7));
+        auto start_pos = header.find(' ');
+        auto end_pos = header.find("OK", start_pos);
+        *reinterpret_cast<int*>(status_code) = stoi(header.substr(start_pos + 1, end_pos - start_pos - 1));
     }
     return nitems;
 }
