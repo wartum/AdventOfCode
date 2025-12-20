@@ -77,19 +77,20 @@ namespace solutions::solution1506
         return {stoi(n1.str()), stoi(n2.str())};
     }
     
-    Grid::Grid()
+    Grid::Grid() :
+        lights(make_unique<array<int, GRID_WIDTH * GRID_HEIGHT>>())
     {
-        lights.fill(0);
+        lights->fill(0);
     }
 
     int& Grid::get_light(int x, int y)
     {
-        return lights.at(y * GRID_HEIGHT + x);
+        return lights->at(y * GRID_HEIGHT + x);
     }
 
     size_t Grid::count_turned_on()
     {
-        return accumulate(lights.begin(), lights.end(), 0);
+        return accumulate(lights->begin(), lights->end(), 0);
     }
 
     void Grid::execute(Instruction instruction)

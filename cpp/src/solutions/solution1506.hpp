@@ -1,4 +1,5 @@
 #pragma once
+#include <memory>
 #include <array>
 
 const int GRID_WIDTH = 1000;
@@ -24,7 +25,7 @@ namespace solutions::solution1506
         int& get_light(int x, int y);
         size_t count_turned_on();
 
-        std::array<int, GRID_WIDTH * GRID_HEIGHT> lights;
+        std::unique_ptr<std::array<int, GRID_WIDTH * GRID_HEIGHT>> lights; 
     };
 
     Position read_position(const std::string &line);

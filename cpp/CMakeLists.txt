@@ -13,6 +13,7 @@ add_library(utils OBJECT
     src/inputs.cpp
     src/params.cpp
 )
+target_link_libraries(utils PUBLIC OpenSSL::Crypto CURL::libcurl)
 
 add_library(solutions OBJECT
     src/solutions/solutions.cpp
@@ -23,6 +24,7 @@ add_library(solutions OBJECT
     src/solutions/solution1505.cpp
     src/solutions/solution1506.cpp
 )
+target_link_libraries(solutions PUBLIC OpenSSL::Crypto CURL::libcurl)
 
 add_executable(unit-tests
     src/solutions/tests/solution1502.cpp
@@ -32,10 +34,20 @@ add_executable(unit-tests
     src/solutions/tests/solution1506.cpp
 )
 target_include_directories(unit-tests PRIVATE src/solutions)
-target_link_libraries(unit-tests PRIVATE solutions OpenSSL::Crypto GTest::gtest_main)
+target_link_libraries(
+    unit-tests
+    PRIVATE
+    solutions
+    OpenSSL::Crypto GTest::gtest_main
+)
 
 enable_testing()
 add_test(unit-tests unit-tests)
 
 add_executable(aoc src/aoc.cpp)
-target_link_libraries(aoc PRIVATE utils solutions OpenSSL::Crypto CURL::libcurl)
+target_link_libraries(
+    aoc
+    PRIVATE
+    utils solutions
+    OpenSSL::Crypto CURL::libcurl
+)
