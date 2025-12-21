@@ -17,23 +17,24 @@ target_link_libraries(utils PUBLIC OpenSSL::Crypto CURL::libcurl)
 
 add_library(solutions OBJECT
     src/solutions/solutions.cpp
-    src/solutions/solution1501.cpp
-    src/solutions/solution1502.cpp
-    src/solutions/solution1503.cpp
-    src/solutions/solution1504.cpp
-    src/solutions/solution1505.cpp
-    src/solutions/solution1506.cpp
-    src/solutions/solution1507.cpp
+    src/solutions/2015/01/solution1501.cpp
+    src/solutions/2015/02/solution1502.cpp
+    src/solutions/2015/03/solution1503.cpp
+    src/solutions/2015/04/solution1504.cpp
+    src/solutions/2015/05/solution1505.cpp
+    src/solutions/2015/06/solution1506.cpp
+    src/solutions/2015/07/solution1507.cpp
 )
+target_include_directories(solutions PRIVATE src/solutions)
 target_link_libraries(solutions PUBLIC OpenSSL::Crypto CURL::libcurl)
 
 add_executable(unit-tests
-    src/solutions/tests/solution1502.cpp
-    src/solutions/tests/solution1503.cpp
-    src/solutions/tests/solution1504.cpp
-    src/solutions/tests/solution1505.cpp
-    src/solutions/tests/solution1506.cpp
-    src/solutions/tests/solution1507.cpp
+    src/solutions/2015/02/tests.cpp
+    src/solutions/2015/03/tests.cpp
+    src/solutions/2015/04/tests.cpp
+    src/solutions/2015/05/tests.cpp
+    src/solutions/2015/06/tests.cpp
+    src/solutions/2015/07/tests.cpp
 )
 target_include_directories(unit-tests PRIVATE src/solutions)
 target_link_libraries(
