@@ -1,7 +1,6 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
-#include <unordered_map>
 
 #include "solutions.hpp"
 #include "solution1507.hpp"
@@ -11,210 +10,317 @@ using namespace solutions;
 
 namespace solutions::solution1507
 {
-
     Solution solve(stringstream &input)
     {
-        unordered_map<string, SignalEmitter> nodes;
-        string line;
-        while (getline(input, line))
+        try
         {
-            auto [lh, rh] = split_signal_definition(line);
-            string rh_key = get_signal_map_key(rh);
-            string lh_key = get_signal_map_key(lh);
-            cout << rh << ": ";
-            nodes[lh_key] = get_signal_map_value(lh, nodes);
-            nodes[rh_key] = Wire(&nodes[lh_key], rh_key);
+            auto circuit = build_circuit(input);
+            simulate_circuit(circuit);
+
+            if (!circuit.contains("a"))
+                throw InvalidInputException("No 'a' signal provided");
+
+            if (get<Wire>(circuit["a"]).src == nullptr)
+                throw runtime_error("Wire 'a' doesn't have source connected");
+
+            if (!get<Wire>(circuit["a"]).signal.has_value())
+                throw runtime_error("Wire 'a' doesn't receive signal");
+
+            Signal original_a = get<Wire>(circuit["a"]).signal.value();
+
+            rewire_circuit(circuit);
+            simulate_circuit(circuit);
+
+            if (!circuit.contains("a"))
+                throw InvalidInputException("No 'a' signal provided");
+
+            if (get<Wire>(circuit["a"]).src == nullptr)
+                throw runtime_error("Wire 'a' doesn't have source connected");
+
+            if (!get<Wire>(circuit["a"]).signal.has_value())
+                throw runtime_error("Wire 'a' doesn't receive signal");
+
+            Signal new_a = get<Wire>(circuit["a"]).signal.value();
+            
+            return {
+                to_string(original_a),
+                to_string(new_a),
+            };
         }
-
-        if (!nodes.contains("a"))
-            throw runtime_error("Signal 'a' doesn't exist");
-
-        return {
-            to_string(evaluate(nodes["a"])),
-            ""
-        };
+        catch (exception &e)
+        {
+            cerr << "ERROR: " << e.what() << endl;
+            return {};
+        }
     }
 
-    bool operator==(const Constant &lh, const Constant &rh)
-    {
-        return lh.value == rh.value;
-    }
-
-    bool operator==(const Wire &lh, const Wire &rh)
-    {
-        return lh.in == rh.in;
-    }
-
-    bool operator==(const Gate &lh, const Gate &rh)
-    {
-        return lh.operationType == rh.operationType &&
-            lh.in1 == rh.in1 &&
-            lh.in2 == rh.in2;
-    }
-
-    Operation parse_operation(const string operation)
+    Operation parse_operation(const string &operation)
     {
         if (operation == "NOT")
             return Operation::NOT;
-        if (operation == "AND")
-            return Operation::AND;
         if (operation == "OR")
             return Operation::OR;
+        if (operation == "AND")
+            return Operation::AND;
         if (operation == "LSHIFT")
             return Operation::LSHIFT;
         if (operation == "RSHIFT")
             return Operation::RSHIFT;
+        throw InvalidInputException("Operation not supported");
+    }
+
+    tuple<string, string> split_signal_descriptor(const string &descriptor)
+    {
+        size_t split_pos = descriptor.find("->");
+        if (split_pos == string::npos)
+            throw InvalidInputException("Delimiter '->' not found");
         
-        throw InvalidInputException("Not supported operation type");
-    }
-
-    uint16_t evaluate(const SignalEmitter &node)
-    {
-        if (holds_alternative<Constant>(node))
-        {
-            auto n = get<Constant>(node);
-            cout << "Evaluate: " << n.name << "\n";
-            return n.value;
-        }
-        else if (holds_alternative<Wire>(node))
-        {
-            auto wire = get<Wire>(node);
-            cout << "Evaluate: " << wire.name << "\n";
-            return evaluate(*wire.in);
-        }
-        else if (holds_alternative<Gate>(node))
-        {
-            auto gate = get<Gate>(node);
-            cout << "Evaluate: " << gate.name << "\n";
-            return evaluate_gate(gate);
-        }
-        else
-        {
-            throw InvalidInputException("Not supported SignalEmitter");
-        }
-    }
-
-    uint16_t evaluate_gate(const Gate &gate)
-    {
-        if (gate.in1 == nullptr)
-            throw runtime_error("input1 is empty");
-        if (gate.operationType != Operation::NOT && gate.in2 == nullptr)
-            throw runtime_error("input2 is empty");
-
-        switch (gate.operationType)
-        {
-        case NOT:
-            return ~evaluate(*gate.in1);
-        case OR:
-            return evaluate(*gate.in1) | evaluate(*gate.in2);
-        case AND:
-            return evaluate(*gate.in1) & evaluate(*gate.in2);
-        case LSHIFT:
-            return evaluate(*gate.in1) << evaluate(*gate.in2);
-        case RSHIFT:
-            return evaluate(*gate.in1) >> evaluate(*gate.in2);
-        default:
-            throw runtime_error("Not supported logic operation");
-        }
-    }
-
-    tuple<string, string> split_signal_definition(const string &line)
-    {
-        size_t split_index = line.find("->");
-        string lh = line.substr(0, split_index);
-        string rh = line.substr(split_index + 2);
-        lh = lh.substr(0, lh.find_last_not_of(' ') + 1);
-        rh = rh.substr(rh.find_first_not_of(' '));
+        const string lh = descriptor.substr(0, split_pos - 1);
+        const string rh = descriptor.substr(split_pos + 3);
         return {lh, rh};
     }
 
-    string get_signal_map_key(const string &signal)
+    bool is_signal(const string &descriptor)
     {
-        string copy(signal);
-        copy.erase(remove_if(copy.begin(), copy.end(), ::isspace), copy.end());
-        return copy;
+        return all_of(descriptor.begin(), descriptor.end(), isdigit);
     }
 
-    Constant read_as_constant(const string &signal, unordered_map<string, SignalEmitter> &nodes)
+    bool is_gate(const string &descriptor)
     {
-        string key = get_signal_map_key(signal);
-        if (!nodes.contains(key))
-            nodes[key] = Constant(stoi(signal), key);
-        cout << key << " = " << "Constant(" << stoi(signal) << ")\n";
-        return get<Constant>(nodes[key]);
+        return any_of(descriptor.begin(), descriptor.end(), isspace);
     }
 
-    Wire read_as_wire(const string &signal, unordered_map<string, SignalEmitter> &nodes)
+    Element create_signal(const string &descriptor)
     {
-        string key = get_signal_map_key(signal);
-        if (!nodes.contains(key))
-            nodes[key] = Wire(nullptr, key);
-        cout << key << " = " << "Wire\n";
-        return get<Wire>(nodes[key]);
+        return Signal(stoi(descriptor));
     }
 
-    Gate read_as_gate(const string &signal, unordered_map<string, SignalEmitter> &nodes)
+    Element create_gate(const string &descriptor, unordered_map<string, Element> &circuit)
     {
-        string key = get_signal_map_key(signal);
-        if (!nodes.contains(key))
+        stringstream tokenizer(descriptor);
+        string src1, src2, operation;
+        tokenizer >> src1;
+        if (src1 == "NOT")
         {
-            stringstream ss(signal);
-            string token;
+            operation = src1;
+            tokenizer >> src1;
+        }
+        else
+        {
+            tokenizer >> operation;
+            tokenizer >> src2;
+        }
 
-            ss >> token;
-            if (token == "NOT")
+        if (!circuit.contains(src1))
+            circuit[src1] = is_signal(src1)
+                ? create_signal(src1)
+                : Wire(src1);
+
+        if (operation == "NOT")
+            return Gate(descriptor, {}, parse_operation(operation), &circuit[src1], nullptr);
+
+        if (!circuit.contains(src2))
+            circuit[src2] = is_signal(src2)
+                ? create_signal(src2)
+                : Wire(src2);
+        
+        return Gate(descriptor, {}, parse_operation(operation), &circuit[src1], &circuit[src2]);
+    }
+
+    Element create_element(const string &descriptor, unordered_map<string, Element> &circuit)
+    {
+        if (is_signal(descriptor))
+            return create_signal(descriptor);
+        if (is_gate(descriptor))
+            return create_gate(descriptor, circuit);
+
+        return Wire(descriptor);
+    }
+
+    void establish_mutual_connection_with_src(Gate &gate, unordered_map<string, Element> &circuit)
+    {
+        if (gate.src1 == nullptr)
+            throw runtime_error("src1 is nullptr");
+
+        if (holds_alternative<Wire>(*gate.src1))
+        {
+            Wire &src = get<Wire>(*gate.src1);
+            if (find(src.dst.begin(), src.dst.end(), &circuit[gate.id]) == src.dst.end())
+                src.dst.push_back(&circuit[gate.id]);
+        }
+        if (holds_alternative<Gate>(*gate.src1))
+        {
+            Gate &src = get<Gate>(*gate.src1);
+            if (find(src.dst.begin(), src.dst.end(), &circuit[gate.id]) == src.dst.end())
+                src.dst.push_back(&circuit[gate.id]);
+        }
+
+        if (gate.operation == Operation::NOT)
+            return;
+
+        if (gate.src2 == nullptr)
+            throw runtime_error("src2 is nullptr");
+
+        if (holds_alternative<Wire>(*gate.src2))
+        {
+            Wire &src = get<Wire>(*gate.src2);
+            if (find(src.dst.begin(), src.dst.end(), &circuit[gate.id]) == src.dst.end())
+                src.dst.push_back(&circuit[gate.id]);
+        }
+        if (holds_alternative<Gate>(*gate.src2))
+        {
+            Gate &src = get<Gate>(*gate.src2);
+            if (find(src.dst.begin(), src.dst.end(), &circuit[gate.id]) == src.dst.end())
+                src.dst.push_back(&circuit[gate.id]);
+        }
+    }
+
+    void establish_mutual_connection_with_src(Wire &wire, unordered_map<string, Element> &circuit)
+    {
+        if (holds_alternative<Wire>(*wire.src))
+        {
+            Wire &src = get<Wire>(*wire.src);
+            if (find(src.dst.begin(), src.dst.end(), &circuit[wire.id]) == src.dst.end())
+                src.dst.push_back(&circuit[wire.id]);
+        }
+        if (holds_alternative<Gate>(*wire.src))
+        {
+            Gate &src = get<Gate>(*wire.src);
+            if (find(src.dst.begin(), src.dst.end(), &circuit[wire.id]) == src.dst.end())
+                src.dst.push_back(&circuit[wire.id]);
+        }
+    }
+
+    unordered_map<string, Element> build_circuit(stringstream &input)
+    {
+        unordered_map<string, Element> circuit;
+        string descriptor;
+        while (getline(input, descriptor))
+        {
+            auto [lh_id, rh_id] = split_signal_descriptor(descriptor);
+            if (!circuit.contains(lh_id))
+                circuit[lh_id] = create_element(lh_id, circuit);
+            
+            if (!circuit.contains(rh_id))
             {
-                ss >> token;
-                string in1_key = get_signal_map_key(token);
-                if (!nodes.contains(in1_key))
-                {
-                    if (all_of(token.begin(), token.end(), ::isdigit))
-                        nodes[in1_key] = read_as_constant(token, nodes);
-                    else
-                        nodes[in1_key] = Wire(nullptr, in1_key);
-                }
-                cout << key << " = " << "Gate(" << Operation::NOT << ", " << in1_key << ", nullptr)\n";
-                nodes[key] = Gate(Operation::NOT, &nodes[in1_key], nullptr, key);
+                Wire rh(rh_id);
+                rh.src = &circuit[lh_id];
+                circuit[rh_id] = rh;
             }
             else
             {
-                string in1_key = get_signal_map_key(token);
-                if (!nodes.contains(in1_key))
-                {
-                    if (all_of(token.begin(), token.end(), ::isdigit))
-                        nodes[in1_key] = read_as_constant(token, nodes);
-                    else
-                        nodes[in1_key] = Wire(nullptr, in1_key);
-                }
-    
-                ss >> token;
-                Operation operation = parse_operation(token);
-    
-                ss >> token;
-                string in2_key = get_signal_map_key(token);
-                if (!nodes.contains(in2_key))
-                {
-                    if (all_of(token.begin(), token.end(), ::isdigit))
-                        nodes[in2_key] = read_as_constant(token, nodes);
-                    else
-                        nodes[in2_key] = Wire(nullptr, in2_key);
-
-                }
-                cout << key << " = " << "Gate(" << operation << ", " << in1_key << ", " << in2_key << ")\n";
-                nodes[key] = Gate(operation, &nodes[in1_key], &nodes[in2_key], key);
+                Wire &rh = get<Wire>(circuit[rh_id]);
+                rh.src = &circuit[lh_id];
             }
 
+            if (holds_alternative<Gate>(circuit[lh_id]))
+            {
+                Gate &gate = get<Gate>(circuit[lh_id]);
+                gate.dst.push_back(&circuit[rh_id]);
+                establish_mutual_connection_with_src(gate, circuit);
+            }
+            else if (holds_alternative<Wire>(circuit[lh_id]))
+            {
+                Wire &wire = get<Wire>(circuit[lh_id]);
+                wire.dst.push_back(&circuit[rh_id]);
+                int x = 5;
+            }
         }
-        return get<Gate>(nodes[key]);
+        return circuit;
     }
 
-    SignalEmitter get_signal_map_value(const string &signal, unordered_map<string, SignalEmitter> &nodes)
+    void simulate_circuit(unordered_map<string, Element> &circuit)
     {
-        if (all_of(signal.begin(), signal.end(), ::isdigit))
-            return read_as_constant(signal, nodes);
-        else if (any_of(signal.begin(), signal.end(), ::isspace))
-            return read_as_gate(signal, nodes);
-        else
-            return read_as_wire(signal, nodes);
+        bool dirty = true;
+        while(dirty)
+        {
+            dirty = false;
+            for (auto &pair : circuit)
+            {
+                if (holds_alternative<Wire>(pair.second))
+                {
+                    Wire &w = get<Wire>(pair.second);
+                    if (!w.signal.has_value())
+                    {
+                        if (holds_alternative<Signal>(*w.src))
+                            w.signal = get<Signal>(*w.src);
+                        else if (holds_alternative<Wire>(*w.src))
+                            w.signal = get<Wire>(*w.src).signal;
+                        else if (holds_alternative<Gate>(*w.src))
+                            w.signal = get<Gate>(*w.src).signal;
+    
+                        if (w.signal.has_value())
+                            dirty = true;
+                    }
+                }
+                else if (holds_alternative<Gate>(pair.second))
+                {
+                    Gate &g = get<Gate>(pair.second);
+                    if (!g.signal.has_value())
+                    {
+                        optional<Signal> sig1, sig2;
+                        if (holds_alternative<Signal>(*g.src1))
+                            sig1 = get<Signal>(*g.src1);
+                        else if (holds_alternative<Wire>(*g.src1))
+                            sig1 = get<Wire>(*g.src1).signal;
+                        else if (holds_alternative<Gate>(*g.src1))
+                            sig1 = get<Gate>(*g.src1).signal;
+
+                        if (g.operation == NOT)
+                        {
+                            if (sig1.has_value())
+                                g.signal = ~sig1.value();
+                        }
+                        else
+                        {
+                            if (holds_alternative<Signal>(*g.src2))
+                                sig2 = get<Signal>(*g.src2);
+                            else if (holds_alternative<Wire>(*g.src2))
+                                sig2 = get<Wire>(*g.src2).signal;
+                            else if (holds_alternative<Gate>(*g.src2))
+                                sig2 = get<Gate>(*g.src2).signal;
+    
+                            if (sig1.has_value() && sig2.has_value())
+                            {
+                                switch(g.operation)
+                                {
+                                    case OR: g.signal = sig1.value() | sig2.value(); break;
+                                    case AND: g.signal = sig1.value() & sig2.value(); break;
+                                    case LSHIFT: g.signal = sig1.value() << sig2.value(); break;
+                                    case RSHIFT: g.signal = sig1.value() >> sig2.value(); break;
+                                }
+                            }
+                        }
+
+                        if (g.signal.has_value())
+                            dirty = true;
+                    }
+                }
+            }
+        }
+    }
+    
+    void rewire_circuit(unordered_map<string, Element> &circuit)
+    {
+        Wire &a = get<Wire>(circuit["a"]);
+        Wire &b = get<Wire>(circuit["b"]);
+        Signal signal = a.signal.value();
+        circuit[to_string(signal)] = signal;
+        b.src = &circuit[to_string(signal)];
+        a.dst.push_back(&circuit["b"]);
+
+        for (auto &pair : circuit)
+        {
+            if (holds_alternative<Wire>(pair.second))
+            {
+                Wire &wire = get<Wire>(pair.second);
+                wire.signal = {};
+            }
+            if (holds_alternative<Gate>(pair.second))
+            {
+                Gate &gate = get<Gate>(pair.second);
+                gate.signal = {};
+            }
+        }
     }
 }
