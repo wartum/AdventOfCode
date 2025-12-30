@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <array>
 #include <unordered_map>
+#include <algorithm>
 
 #include "solution1507.hpp"
 

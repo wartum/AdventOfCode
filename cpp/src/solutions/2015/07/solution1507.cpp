@@ -82,12 +82,12 @@ namespace solutions::solution1507
 
     bool is_signal(const string &descriptor)
     {
-        return all_of(descriptor.begin(), descriptor.end(), isdigit);
+        return all_of(descriptor.begin(), descriptor.end(), ::isdigit);
     }
 
     bool is_gate(const string &descriptor)
     {
-        return any_of(descriptor.begin(), descriptor.end(), isspace);
+        return any_of(descriptor.begin(), descriptor.end(), ::isspace);
     }
 
     Element create_signal(const string &descriptor)
